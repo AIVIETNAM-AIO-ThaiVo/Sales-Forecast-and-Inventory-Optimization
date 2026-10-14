@@ -1,19 +1,106 @@
-# Inventory Simulator MVP
+# Inventory Optimization Simulator
 
-MVP Streamlit dashboard theo `inventory_simulator_architecture_draft.md`. App dùng trực tiếp:
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![Streamlit](https://img.shields.io/badge/Streamlit-dashboard-red)
+![License](https://img.shields.io/badge/status-MVP-orange)
 
-- `Data/df_detrend.parquet` (7.017.300 dòng, 5.650 M5 HOBBIES series)
-- `Models/model_{store}_{dept}.pkl` (20 LightGBM Booster artifacts)
+> Dashboard mô phỏng và đánh giá các chính sách tồn kho trên dữ liệu M5 Forecasting Accuracy.
 
-## Chạy
+## ✨ Highlights
+
+- Dashboard Streamlit gồm 7 khu vực phân tích độc lập.
+- So sánh Historical Baseline, Forecast-based và Forecast + Alpha-Beta.
+- Forecast theo đúng lead time và mô phỏng tồn kho theo từng ngày.
+- Tự tìm alpha/beta phù hợp cho từng item trong bước Strategy Statistics.
+- Tính ROP bằng `ceil` và Q bằng `round`.
+- Benchmark toàn bộ item theo tổng chi phí, tỷ lệ thiếu hàng và tồn kho trung bình.
+- Pipeline notebook để xử lý dữ liệu M5, train LightGBM và xuất artifact cho ứng dụng.
+
+## 🔎 Overview
+
+Inventory Optimization Simulator là một MVP giúp phân tích nhu cầu, dự báo ngắn hạn và đánh giá chính sách bổ sung hàng ở cấp Store–Department–Item.
+
+Ứng dụng sử dụng dữ liệu đã xử lý trong `Data/` và các model LightGBM trong `Models/`. Người dùng có thể khám phá dữ liệu, xem forecast, chạy mô phỏng, tối ưu tham số và so sánh benchmark giữa các policy.
+
+Các cửa sổ đánh giá mặc định:
+
+- Optimization: `d=1830..1913`
+- Final test: `d=1914..1941`
+- Warm-up: 28 ngày
+
+### 👤 Author
+
+Dự án cá nhân phục vụ nghiên cứu và thử nghiệm inventory optimization trên dữ liệu M5.
+
+## 🚀 Usage
+
+Khởi động dashboard:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\streamlit.exe run app.py
 ```
 
-App được chia thành 7 workspace độc lập: Data Explorer, Forecast Explorer, Inventory Simulation, Strategy Comparison, Optimization, Strategy Statistics và Strategy Visualization. Mỗi tab có selector Store → Department → Item, tham số và nút Run riêng; không dùng một sidebar chung cho toàn bộ phân tích. Evaluation windows được cố định theo yêu cầu: optimization `d=1830..1913`, final test `d=1914..1941`. Strategy Statistics chạy theo scope store/department, tự grid-search alpha/beta cho từng item trên optimization, dùng cặp tốt nhất để đánh giá test, rồi ghi policy, total cost, shortage rate và average inventory cho từng item trước khi đếm strategy theo `store_id`. Strategy Visualization tổng hợp ba chỉ số này theo policy. Reference selling price mặc định là median `sell_price` của SKU trong optimization window nhưng vẫn có thể sửa tay.
+Sau khi mở ứng dụng, chọn Store → Department → Item trong từng tab rồi nhấn nút Run tương ứng. Các tab gồm:
 
-Kết quả gồm daily inventory state, 3 strategy summary, grid search và các file tải xuống `daily_inventory.csv`, `strategy_summary.csv`, `grid_search_results.csv`, `run_config.json`.
+- Data Explorer
+- Forecast Explorer
+- Inventory Simulation
+- Strategy Comparison
+- Optimization
+- Strategy Statistics
+- Strategy Visualization
 
-Lưu ý MVP: parquet hiện không chứa calendar date nên dashboard dùng `d`; `sell_price` được lấy trực tiếp từ feature table. Khi model feature schema không tương thích, app cảnh báo và dùng seasonal-naive fallback; với artifact hiện tại, LightGBM prediction đã được kiểm thử thành công.
+Kết quả có thể tải xuống dưới dạng `daily_inventory.csv`, `strategy_summary.csv`, `grid_search_results.csv` và `run_config.json`.
+
+## 📦 Installation
+
+Yêu cầu Python 3.10 trở lên. Khuyến nghị sử dụng virtual environment:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+Đặt artifact đầu vào như sau:
+
+```text
+Data/
+└── df_detrend.parquet
+
+Models/
+├── model_CA_1.pkl
+├── model_CA_2.pkl
+└── ...
+```
+
+Các thư mục `Data/`, `Models/` và `.venv/` được đưa vào `.gitignore` vì chứa dữ liệu lớn, model và môi trường local.
+
+### Training pipeline
+
+Notebook xử lý và train model nằm tại [pipeline/pipeline.ipynb](pipeline/pipeline.ipynb). Pipeline hỗ trợ:
+
+1. Đọc dữ liệu M5.
+2. Reshape và tạo feature theo item.
+3. Detrend, tạo lag/rolling features và encoding.
+4. Train các model LightGBM theo Store–Department.
+5. Lưu dữ liệu đã xử lý vào `Data/` và model vào `Models/`.
+
+Trên local, dữ liệu M5 mặc định được tìm tại:
+
+```text
+raw_data/m5-forecasting-accuracy/
+```
+
+Có thể thay đổi đường dẫn bằng biến môi trường `M5_INPUT_DIR`.
+
+## 🤝 Feedback and Contributing
+
+Nếu phát hiện lỗi hoặc có đề xuất cải tiến, hãy mở một Issue trong repository. Các đóng góp liên quan đến giao diện, hiệu năng, forecasting hoặc inventory policy đều được hoan nghênh.
+
+Trước khi tạo pull request, hãy kiểm tra cú pháp và chạy test:
+
+```powershell
+.\.venv\Scripts\python.exe -m compileall -q app.py src
+.\.venv\Scripts\python.exe -m pytest -q
+```
