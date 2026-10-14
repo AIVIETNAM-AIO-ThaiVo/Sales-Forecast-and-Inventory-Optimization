@@ -1,0 +1,17 @@
+# Local Python virtual environments
+.venv/
+venv/
+env/
+
+# Generated datasets and trained model artifacts
+Data/
+Models/
+
+# Python cache and test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local runtime outputs
+work/
+*.log
