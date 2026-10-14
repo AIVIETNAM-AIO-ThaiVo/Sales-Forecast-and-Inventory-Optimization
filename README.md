@@ -6,6 +6,15 @@
 
 > Dashboard mô phỏng và đánh giá các chính sách tồn kho trên dữ liệu M5 Forecasting Accuracy.
 
+## 📚 Project Documentation
+
+Đọc tài liệu dự án trước khi sử dụng:
+
+- **[Documentation đầy đủ (PDF)](Document/Documentation.pdf)** — tài liệu tổng quan và hướng dẫn chi tiết.
+- **[Luồng hoạt động hiện tại](Document/inventory_simulator_architecture_draft.md)** — mô tả đúng các tab, pipeline dữ liệu, forecast và simulator đang có.
+
+Các tài liệu trên được đặt ngay trong repository để người đọc có thể mở trực tiếp từ README.
+
 ## ✨ Highlights
 
 - Dashboard Streamlit gồm 7 khu vực phân tích độc lập.
