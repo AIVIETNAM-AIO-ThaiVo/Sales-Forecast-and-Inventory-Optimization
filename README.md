@@ -59,6 +59,28 @@ Sau khi mở ứng dụng, chọn Store → Department → Item trong từng tab
 - Strategy Statistics
 - Strategy Visualization
 
+### Giao diện từng tab
+
+#### Data Explorer
+
+![Data Explorer](<picture/Data Explorer.png>)
+
+#### Forecast Explorer
+
+![Forecast Explorer](<picture/Forecast.png>)
+
+#### Inventory Simulation
+
+![Inventory Simulation](<picture/Inventory Simulator.png>)
+
+#### Strategy Comparison
+
+![Strategy Comparison](<picture/Strategy Comparision.png>)
+
+#### Strategy Visualization
+
+![Strategy Visualization](<picture/Strategy Visualization.png>)
+
 Kết quả có thể tải xuống dưới dạng `daily_inventory.csv`, `strategy_summary.csv`, `grid_search_results.csv` và `run_config.json`.
 
 ## 📦 Installation
